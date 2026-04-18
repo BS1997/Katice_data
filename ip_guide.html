@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>알리고 API - IP 등록 가이드</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+    background: #0f172a; color: #e2e8f0;
+    line-height: 1.8; padding: 0;
+  }
+  .hero {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    color: #fff; padding: 40px 24px; text-align: center;
+  }
+  .hero h1 { font-size: 24px; margin-bottom: 8px; }
+  .hero p  { font-size: 14px; opacity: 0.9; }
+  .container { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
+
+  .card {
+    background: #1e293b; border-radius: 12px;
+    margin-bottom: 24px; overflow: hidden;
+    border: 1px solid #334155;
+  }
+  .card-header {
+    background: #334155; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .step-num {
+    background: #ef4444; color: #fff;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 14px; flex-shrink: 0;
+  }
+  .card-header h2 { font-size: 16px; color: #f8fafc; }
+  .card-body { padding: 20px; }
+  .card-body p { margin-bottom: 12px; color: #cbd5e1; }
+  .card-body ol, .card-body ul { margin-left: 20px; margin-bottom: 12px; }
+  .card-body li { margin-bottom: 8px; color: #cbd5e1; }
+
+  .highlight {
+    background: #1e3a5f; border-left: 4px solid #3b82f6;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 14px; color: #93c5fd;
+  }
+  .warning {
+    background: #422006; border-left: 4px solid #f59e0b;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 14px; color: #fde68a;
+  }
+  .danger {
+    background: #450a0a; border-left: 4px solid #ef4444;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 14px; color: #fca5a5;
+  }
+
+  code {
+    background: #334155; padding: 2px 8px;
+    border-radius: 4px; font-family: Consolas, monospace;
+    font-size: 13px; color: #fbbf24;
+  }
+
+  a { color: #60a5fa; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .screenshot {
+    background: #f8fafc; border-radius: 8px; padding: 20px;
+    margin: 16px 0; color: #1e293b; font-size: 13px;
+    border: 1px solid #334155;
+  }
+  .screenshot .title {
+    font-weight: bold; font-size: 16px; color: #1e293b;
+    margin-bottom: 16px;
+  }
+  .screenshot table {
+    width: 100%; border-collapse: collapse; margin-bottom: 12px;
+  }
+  .screenshot th {
+    background: #f1f5f9; padding: 8px 12px; text-align: left;
+    border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 13px;
+  }
+  .screenshot td {
+    padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #64748b;
+  }
+  .screenshot .current-ip {
+    color: #dc2626; font-size: 13px; margin: 12px 0;
+  }
+  .screenshot .ip-form {
+    display: flex; gap: 6px; align-items: center; margin: 12px 0;
+  }
+  .screenshot .ip-input {
+    border: 1px solid #d1d5db; border-radius: 4px; padding: 6px 10px;
+    width: 100px; text-align: center; font-size: 13px; color: #9ca3af;
+  }
+  .screenshot .ip-dot { color: #9ca3af; font-weight: bold; }
+  .screenshot .btn-add {
+    background: #4ade80; color: #fff; border: none; border-radius: 4px;
+    padding: 8px 20px; font-weight: bold; font-size: 13px;
+  }
+  .screenshot .ip-note {
+    color: #dc2626; font-size: 12px; margin-top: 8px;
+  }
+  .screenshot .delete-link {
+    color: #3b82f6; text-decoration: none; font-size: 13px;
+  }
+
+  .btn-link {
+    display: inline-block; background: #3b82f6; color: #fff;
+    padding: 10px 24px; border-radius: 8px; font-weight: bold;
+    font-size: 14px; text-decoration: none; margin: 8px 0;
+  }
+  .btn-link:hover { background: #2563eb; text-decoration: none; }
+
+  .footer {
+    text-align: center; padding: 32px 24px;
+    color: #64748b; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>알리고 API — IP 등록이 필요합니다</h1>
+  <p>현재 PC의 공인 IP가 알리고에 등록되지 않아 API 호출이 차단됩니다</p>
+</div>
+
+<div class="container">
+
+  <!-- 왜 필요한가 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">!</div>
+      <h2>왜 IP 등록이 필요한가요?</h2>
+    </div>
+    <div class="card-body">
+      <p>알리고(Aligo) API는 보안을 위해 <strong>등록된 IP에서만 API 호출을 허용</strong>합니다.</p>
+      <p>현재 PC의 공인 IP가 알리고에 등록되어 있지 않으면, 토큰 생성 및 메시지 발송이 모두 차단됩니다.</p>
+      <div class="danger">
+        <strong>오류 메시지:</strong> "토큰 생성 실패: 인증되지 않는 서버 IP로 부터의 호출 입니다."<br>
+        이 오류가 나타나면 아래 절차대로 IP를 등록하세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">1</div>
+      <h2>알리고 발송 서버 IP 관리 페이지 접속</h2>
+    </div>
+    <div class="card-body">
+      <p>아래 링크를 클릭하여 알리고의 <strong>발송 서버 IP</strong> 관리 페이지로 이동합니다.</p>
+      <p style="text-align: center; margin: 20px 0;">
+        <a href="https://smartsms.aligo.in/shop/kakaoauth.html" class="btn-link" target="_blank">
+          알리고 IP 등록 페이지 바로가기
+        </a>
+      </p>
+      <div class="highlight">
+        로그인이 필요합니다. 알리고 계정으로 로그인하세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">2</div>
+      <h2>공인 IP 등록하기</h2>
+    </div>
+    <div class="card-body">
+      <p>아래와 같은 화면이 보입니다. 프로그램 설정에 표시된 <strong>공인 IP</strong>를 입력하고 <strong>[IP 추가하기]</strong>를 클릭하세요.</p>
+
+      <!-- 화면 재현 -->
+      <div class="screenshot">
+        <div class="title">발송 서버 IP</div>
+        <table>
+          <tr>
+            <th style="width:35%">등록일</th>
+            <th style="width:45%">IP</th>
+            <th style="width:20%">관리</th>
+          </tr>
+          <tr>
+            <td>2026.04.16 14:33</td>
+            <td>(기존 등록된 IP)</td>
+            <td><a class="delete-link">삭제</a></td>
+          </tr>
+        </table>
+
+        <p class="current-ip">* 현재 접속한 IP : <strong>58.126.213.220</strong> (실제 발송할 서버 IP를 확인 하신 후 입력하시기 바랍니다)</p>
+
+        <div class="ip-form">
+          <span class="ip-input">IP번호</span>
+          <span class="ip-dot">.</span>
+          <span class="ip-input">IP번호</span>
+          <span class="ip-dot">.</span>
+          <span class="ip-input">IP번호</span>
+          <span class="ip-dot">.</span>
+          <span class="ip-input">IP번호</span>
+          <span class="btn-add">IP 추가하기</span>
+        </div>
+
+        <p class="ip-note">* IP 대역을 추가하시려면 공란으로 비워두면 됩니다.<br>192.168.0. (공란)</p>
+      </div>
+
+      <ol>
+        <li>프로그램 설정의 <strong>공인 IP</strong>에 표시된 IP 주소를 확인합니다</li>
+        <li>IP 주소를 점(.) 기준으로 4칸에 나눠 입력합니다<br>
+            예: <code>58</code> . <code>126</code> . <code>213</code> . <code>220</code></li>
+        <li><strong>[IP 추가하기]</strong> 버튼을 클릭합니다</li>
+        <li>등록 완료 후 프로그램에서 <strong>[새로고침]</strong>을 눌러 확인합니다</li>
+      </ol>
+
+      <div class="warning">
+        <strong>유동 IP 사용자:</strong> 4번째 칸을 비워두면 해당 대역 전체가 허용됩니다.<br>
+        예: <code>58</code> . <code>126</code> . <code>213</code> . <code>(공란)</code> → 58.126.213.* 전체 허용<br>
+        IP가 자주 바뀌는 환경이라면 이 방법이 편리합니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">3</div>
+      <h2>등록 확인</h2>
+    </div>
+    <div class="card-body">
+      <ol>
+        <li>알리고에서 IP 등록 완료</li>
+        <li>프로그램의 설정 관리에서 <strong>[새로고침]</strong> 버튼 클릭</li>
+        <li>공인 IP 옆에 <strong style="color: #4ade80;">(등록됨)</strong>이 표시되면 성공</li>
+      </ol>
+      <div class="highlight">
+        등록 후 반영까지 1~2분 소요될 수 있습니다. 바로 안 되면 잠시 후 다시 시도하세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">?</div>
+      <h2>자주 묻는 질문</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>Q. IP가 자꾸 바뀌는데 어떻게 하나요?</strong></p>
+      <p>A. 4번째 칸을 비워서 대역으로 등록하세요. 또는 IP 변경 시마다 재등록이 필요합니다.</p>
+      <br>
+      <p><strong>Q. 사무실과 집에서 번갈아 사용합니다.</strong></p>
+      <p>A. 두 곳의 공인 IP를 모두 등록하면 됩니다. 여러 IP를 등록할 수 있습니다.</p>
+      <br>
+      <p><strong>Q. 등록했는데 여전히 오류가 납니다.</strong></p>
+      <p>A. IP를 정확히 입력했는지 확인하세요. VPN 사용 중이라면 VPN IP가 아닌 실제 IP를 등록해야 합니다. 반영까지 1~2분 소요될 수 있습니다.</p>
+      <br>
+      <p><strong>Q. 페이지가 안 보여요.</strong></p>
+      <p>A. 알리고 로그인 후 접속해야 합니다. 직접 URL을 입력하세요: <code>https://smartsms.aligo.in/shop/kakaoauth.html</code></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  카카오 채널 메시지 발송 프로그램 — IP 등록 가이드
+</div>
+
+</body>
+</html>

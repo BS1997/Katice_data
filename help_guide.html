@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카카오 채널 메시지 발송 - 사용 가이드</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+    background: #0f172a; color: #e2e8f0;
+    line-height: 1.8; padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff; padding: 52px 24px; text-align: center;
+  }
+  .hero h1 { font-size: 30px; margin-bottom: 10px; }
+  .hero p  { font-size: 15px; opacity: 0.9; }
+
+  .nav {
+    background: #020617; padding: 12px 24px; text-align: center;
+    position: sticky; top: 0; z-index: 10;
+    border-bottom: 1px solid #1e293b;
+  }
+  .nav a {
+    color: #94a3b8; text-decoration: none; margin: 0 10px;
+    font-size: 13px; font-weight: bold;
+  }
+  .nav a:hover { color: #3b82f6; }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 32px 24px; }
+
+  .section-title {
+    font-size: 20px; font-weight: bold; color: #f8fafc;
+    margin: 40px 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid #3b82f6;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .card {
+    background: #1e293b; border-radius: 12px;
+    margin-bottom: 20px; overflow: hidden;
+    border: 1px solid #334155;
+  }
+  .card-header {
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid #334155;
+  }
+  .card-header.blue   { background: #1e3a5f; }
+  .card-header.green  { background: #14532d; }
+  .card-header.purple { background: #3b1f6e; }
+  .card-header.amber  { background: #451a03; }
+  .card-header.red    { background: #450a0a; }
+
+  .step-num {
+    color: #fff; width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 14px; flex-shrink: 0;
+  }
+  .step-num.blue   { background: #3b82f6; }
+  .step-num.green  { background: #22c55e; }
+  .step-num.purple { background: #a78bfa; }
+  .step-num.amber  { background: #f59e0b; }
+  .step-num.red    { background: #ef4444; }
+
+  .card-header h2 { font-size: 16px; color: #f8fafc; }
+  .card-body { padding: 20px 24px; }
+  .card-body p { margin-bottom: 12px; color: #cbd5e1; }
+  .card-body ol, .card-body ul { margin-left: 20px; margin-bottom: 12px; }
+  .card-body li { margin-bottom: 8px; color: #cbd5e1; }
+  .card-body strong { color: #f8fafc; }
+
+  .highlight {
+    background: #1e3a5f; border-left: 4px solid #3b82f6;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #93c5fd;
+  }
+  .warning {
+    background: #422006; border-left: 4px solid #f59e0b;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #fde68a;
+  }
+  .danger {
+    background: #450a0a; border-left: 4px solid #ef4444;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #fca5a5;
+  }
+  .tip {
+    background: #14532d; border-left: 4px solid #22c55e;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #86efac;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px;
+  }
+  th {
+    background: #334155; padding: 10px 12px;
+    text-align: left; border: 1px solid #475569; color: #f8fafc; font-weight: 600;
+  }
+  td { padding: 10px 12px; border: 1px solid #475569; color: #cbd5e1; }
+
+  .comparison-table th {
+    background: #1e3a5f; color: #fff;
+  }
+  .comparison-table tr:nth-child(even) td { background: #1e293b; }
+
+  code {
+    background: #334155; padding: 2px 8px;
+    border-radius: 4px; font-family: Consolas, monospace;
+    font-size: 13px; color: #fbbf24;
+  }
+  pre {
+    background: #020617; color: #e2e8f0; padding: 16px;
+    border-radius: 8px; overflow-x: auto; font-size: 13px;
+    margin: 12px 0; font-family: Consolas, monospace;
+    border: 1px solid #334155;
+  }
+
+  .badge {
+    display: inline-block; padding: 3px 12px; border-radius: 12px;
+    font-size: 12px; font-weight: bold; color: #fff;
+  }
+  .badge-blue   { background: #3b82f6; }
+  .badge-green  { background: #22c55e; }
+  .badge-purple { background: #a78bfa; }
+
+  .flow-box {
+    background: #020617; border: 1px solid #334155; border-radius: 8px;
+    padding: 20px; margin: 16px 0; text-align: center;
+    font-family: Consolas, monospace; font-size: 14px; color: #94a3b8;
+    line-height: 2;
+  }
+  .flow-box .active { color: #4ade80; font-weight: bold; }
+  .flow-box .arrow  { color: #64748b; }
+
+  .footer {
+    text-align: center; padding: 40px 24px;
+    color: #475569; font-size: 12px;
+    border-top: 1px solid #1e293b;
+  }
+
+/* ==== 알리고 템플릿관리 화면 목업 ==== */
+.aligo-mock {
+  background: #ffffff;
+  color: #333;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 20px 24px;
+  font-size: 13px;
+  font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+  overflow-x: auto;
+}
+.aligo-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 2px solid #12c9bb;
+  margin-bottom: 20px;
+}
+.aligo-tab {
+  padding: 10px 18px;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #666;
+  font-size: 13px;
+}
+.aligo-tab.active {
+  background: #fff;
+  color: #12c9bb;
+  font-weight: 700;
+  border-color: #12c9bb;
+  border-bottom: 2px solid #fff;
+  margin-bottom: -2px;
+}
+.aligo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.aligo-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+}
+.aligo-help {
+  font-size: 12px;
+  color: #0066cc;
+  margin-left: 8px;
+  text-decoration: underline;
+  font-weight: normal;
+  cursor: default;
+}
+.aligo-header-btns {
+  display: flex;
+  gap: 8px;
+}
+.aligo-btn-primary {
+  background: #12c9bb;
+  color: #fff;
+  border: 1px solid #12c9bb;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: default;
+}
+.aligo-btn-outline {
+  background: #fff;
+  color: #12c9bb;
+  border: 1px solid #12c9bb;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: default;
+}
+.aligo-btn-gray {
+  background: #888;
+  color: #fff;
+  border: 1px solid #888;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: default;
+}
+.aligo-search-row,
+.aligo-action-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+.aligo-select,
+.aligo-input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 13px;
+  background: #fff;
+  color: #333;
+}
+.aligo-input { flex: 1; min-width: 200px; }
+.aligo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.aligo-table th {
+  background: #f5f5f5;
+  padding: 12px 10px;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  font-size: 13px;
+}
+.aligo-table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-size: 13px;
+}
+.aligo-badge-ok {
+  color: #4b36e5;
+  font-weight: 700;
+}
+.aligo-link {
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: default;
+}
+.aligo-status-approved {
+  color: #333;
+  font-weight: 600;
+}
+.aligo-pager {
+  text-align: center;
+  margin-top: 18px;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  background: #222;
+  color: #fff;
+  border-radius: 4px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>카카오 채널 메시지 발송 프로그램</h1>
+  <p>알리고(Aligo) API 기반 | 알림톡 + 친구톡 발송 가이드</p>
+</div>
+
+<div class="nav">
+  <a href="#start">시작하기</a>
+  <a href="#login">로그인</a>
+  <a href="#setup">초기설정</a>
+  <a href="#compare">알림톡 vs 친구톡</a>
+  <a href="#alimtalk">알림톡</a>
+  <a href="#alimtalk-excel">알림톡(엑셀)</a>
+  <a href="#friendtalk">친구톡</a>
+  <a href="#template">템플릿</a>
+  <a href="#result">결과확인</a>
+  <a href="#faq">FAQ</a>
+</div>
+
+<div class="container">
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="start">처음 사용하시나요?</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header blue">
+      <div class="step-num blue">!</div>
+      <h2>전체 사용 흐름</h2>
+    </div>
+    <div class="card-body">
+      <p>이 프로그램은 카카오톡으로 고객에게 메시지를 보내는 도구입니다. 아래 순서대로 진행하세요.</p>
+
+      <div class="flow-box">
+        <span class="active">1. 로그인</span> <span class="arrow">&rarr;</span>
+        <span class="active">2. 알리고 설정</span> <span class="arrow">&rarr;</span>
+        <span class="active">3. IP 등록</span> <span class="arrow">&rarr;</span>
+        <span class="active">4. 메시지 발송</span>
+      </div>
+
+      <table>
+        <tr><th style="width:30%">단계</th><th>설명</th><th style="width:15%">소요시간</th></tr>
+        <tr><td><strong>1. 로그인</strong></td><td>이메일 인증으로 사용권 확인</td><td>1분</td></tr>
+        <tr><td><strong>2. 알리고 설정</strong></td><td>API KEY 등 4가지 정보 입력</td><td>5분</td></tr>
+        <tr><td><strong>3. IP 등록</strong></td><td>알리고에 현재 PC의 IP 등록</td><td>2분</td></tr>
+        <tr><td><strong>4. 메시지 발송</strong></td><td>알림톡 또는 친구톡으로 발송</td><td>-</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="login">1단계: 로그인</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header blue">
+      <div class="step-num blue">1</div>
+      <h2>프로그램 로그인</h2>
+    </div>
+    <div class="card-body">
+      <p>프로그램을 실행하면 <strong>"인증되지 않은 사용자입니다"</strong> 화면이 나옵니다. 중앙의 <strong>[로그인]</strong> 버튼을 클릭하세요.</p>
+
+      <ol>
+        <li>등록된 <strong>이메일</strong>을 입력합니다</li>
+        <li><strong>[인증번호 요청]</strong>을 클릭합니다</li>
+        <li>이메일로 받은 <strong>6자리 인증번호</strong>를 입력합니다</li>
+        <li><strong>[인증 확인]</strong>을 클릭하면 로그인 완료!</li>
+      </ol>
+
+      <div class="highlight">
+        <strong>인증번호는 5분간 유효합니다.</strong> 5분이 지나면 [재전송] 버튼으로 다시 받으세요.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header amber">
+      <div class="step-num amber">?</div>
+      <h2>등록되지 않은 이메일인 경우</h2>
+    </div>
+    <div class="card-body">
+      <p>아직 등록되지 않은 이메일을 입력하면 <strong>가입 신청 화면</strong>이 자동으로 나타납니다.</p>
+
+      <ol>
+        <li><strong>이메일</strong> — 인증번호를 받을 이메일</li>
+        <li><strong>상호(이름)</strong> — 회사명 또는 이름</li>
+        <li><strong>휴대전화번호</strong> — 연락 가능한 번호 (예: 01012345678)</li>
+        <li><strong>개인정보 수집 동의</strong> 체크</li>
+        <li><strong>[가입 신청]</strong> 클릭</li>
+      </ol>
+
+      <div class="warning">
+        가입 신청 후 관리자가 확인하고 승인합니다.<br>
+        승인이 완료되면 해당 이메일로 로그인할 수 있습니다.<br>
+        <strong>승인 전까지는 "승인 대기 중입니다" 메시지가 표시됩니다.</strong>
+      </div>
+
+      <p>또는 로그인 화면 하단의 <strong>"처음 사용하시나요? 가입 신청하기"</strong> 링크를 클릭해도 됩니다.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="setup">2단계: 알리고 초기 설정</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header blue">
+      <div class="step-num blue">2</div>
+      <h2>알리고 가입 및 API 정보 입력</h2>
+    </div>
+    <div class="card-body">
+      <p>카카오 메시지를 발송하려면 <strong>알리고(Aligo)</strong> 서비스에 가입하고 API 정보를 설정해야 합니다.</p>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">알리고 가입 (최초 1회)</h3>
+      <ol>
+        <li><code>https://smartsms.aligo.in</code> 접속 후 회원가입</li>
+        <li>카카오 채널 개설: <code>https://center-pf.kakao.com</code></li>
+        <li>알리고 > 카카오톡 > 발신프로필 관리에서 카카오 채널 연동</li>
+      </ol>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">API Key / Sender Key 확인 방법</h3>
+      <p>아래 페이지에서 API Key와 Sender Key를 확인할 수 있습니다.</p>
+      <p style="text-align:center; margin: 12px 0;">
+        <a href="https://smartsms.aligo.in/shop/kakaoauth.html" target="_blank"
+           style="display:inline-block; background:#3b82f6; color:#fff; padding:10px 24px;
+                  border-radius:8px; font-weight:bold; font-size:14px; text-decoration:none;">
+          알리고 API Key / Sender Key 확인 페이지
+        </a>
+      </p>
+
+      <!-- API Key 화면 재현 -->
+      <div style="background:#f8fafc; border-radius:8px; padding:20px; margin:16px 0;
+                  color:#1e293b; font-size:13px; border:1px solid #334155;">
+        <div style="font-size:16px; font-weight:bold; color:#1e293b; margin-bottom:14px;">기존 API Key</div>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+          <tr>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:left; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">등록일</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">Identifier</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">발급키</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">관리</th>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b;">2026.04.16 14:27</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b; text-align:center;">myaligo01</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; text-align:center;">
+              <span style="background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:4px; font-family:Consolas; font-size:13px; font-weight:bold;">ab12cd34ef56gh78... &larr; 이것이 API KEY</span>
+            </td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#3b82f6; text-align:center;">삭제</td>
+          </tr>
+        </table>
+
+        <div style="font-size:16px; font-weight:bold; color:#1e293b; margin:20px 0 14px;">Senderkey</div>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:left; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">등록일</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">카카오채널ID</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px;">Senderkey</th>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b;">2026.04.10 20:49</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b; text-align:center;">@mychannel (정상)</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; text-align:center;">
+              <span style="background:#dbeafe; color:#1e40af; padding:2px 8px; border-radius:4px; font-family:Consolas; font-size:13px; font-weight:bold;">9f8e7d6c5b4a3210... &larr; 이것이 SENDER KEY</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">프로그램에 설정 입력</h3>
+      <p>프로그램의 <strong>[설정 파일 열기]</strong> 버튼을 눌러 아래 4가지 값을 입력하세요.</p>
+
+      <table>
+        <tr><th>항목</th><th>설명</th><th>어디서 확인?</th></tr>
+        <tr>
+          <td><code>ALIGO_API_KEY</code></td>
+          <td>알리고 API 인증키 (발급키)</td>
+          <td>위 화면의 <strong>기존 API Key</strong> > 발급키</td>
+        </tr>
+        <tr>
+          <td><code>ALIGO_USER_ID</code></td>
+          <td>알리고 로그인 아이디</td>
+          <td>위 화면의 <strong>Identifier</strong> 또는 가입 시 아이디</td>
+        </tr>
+        <tr>
+          <td><code>ALIGO_SENDER_KEY</code></td>
+          <td>카카오 채널 발신프로필 키</td>
+          <td>위 화면의 <strong>Senderkey</strong></td>
+        </tr>
+        <tr>
+          <td><code>ALIGO_SENDER</code></td>
+          <td>발신자 전화번호</td>
+          <td>알리고에 등록된 발신번호</td>
+        </tr>
+      </table>
+
+      <div class="danger">
+        <strong>주의: API KEY와 SENDER KEY를 혼동하지 마세요!</strong><br>
+        <code>ALIGO_API_KEY</code>는 <strong>발급키</strong> (짧은 영문+숫자)<br>
+        <code>ALIGO_SENDER_KEY</code>는 <strong>Senderkey</strong> (긴 영문+숫자)<br>
+        두 값을 뒤바꿔 입력하면 "등록되지 않은 인증키" 오류가 발생합니다.
+      </div>
+
+      <p>입력 후 <strong>[새로고침]</strong>을 누르면 설정이 반영됩니다.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header red">
+      <div class="step-num red">3</div>
+      <h2>IP 등록 (공인 IP가 "미등록"인 경우)</h2>
+    </div>
+    <div class="card-body">
+      <p>설정 완료 후 <strong>공인 IP</strong> 항목이 <strong style="color:#f87171;">(미등록)</strong>으로 표시되면 알리고에 IP를 등록해야 합니다.</p>
+
+      <div class="tip">
+        <strong>이미 (등록됨)으로 표시되어 있다면 이 단계는 건너뛰세요!</strong>
+      </div>
+
+      <div class="danger">
+        <strong>오류 메시지:</strong> "토큰 생성 실패: 인증되지 않는 서버 IP로 부터의 호출 입니다."<br>
+        이 오류가 나타나면 아래 절차대로 IP를 등록하세요.
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 20px 0 8px;">3-1. 알리고 IP 등록 페이지 접속</h3>
+      <p>아래 링크를 클릭하여 알리고의 <strong>발송 서버 IP</strong> 관리 페이지로 이동합니다.</p>
+      <p style="text-align: center; margin: 16px 0;">
+        <a href="https://smartsms.aligo.in/shop/kakaoauth.html" target="_blank"
+           style="display:inline-block; background:#ef4444; color:#fff; padding:10px 24px;
+                  border-radius:8px; font-weight:bold; font-size:14px; text-decoration:none;">
+          알리고 IP 등록 페이지 바로가기
+        </a>
+      </p>
+      <div class="highlight">
+        로그인이 필요합니다. 알리고 계정으로 로그인하세요.
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 20px 0 8px;">3-2. 공인 IP 등록하기</h3>
+      <p>아래와 같은 화면이 보입니다. 프로그램 설정에 표시된 <strong>공인 IP</strong>를 입력하고 <strong>[IP 추가하기]</strong>를 클릭하세요.</p>
+
+      <!-- 알리고 화면 재현 -->
+      <div style="background:#f8fafc; border-radius:8px; padding:20px; margin:16px 0;
+                  color:#1e293b; font-size:13px; border:1px solid #334155;">
+        <div style="font-size:16px; font-weight:bold; color:#1e293b; margin-bottom:14px;">발송 서버 IP</div>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:12px;">
+          <tr>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:left; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px; width:35%;">등록일</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px; width:45%;">IP</th>
+            <th style="background:#f1f5f9; padding:8px 12px; text-align:center; border-bottom:2px solid #e2e8f0; color:#475569; font-size:12px; width:20%;">관리</th>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b;">2026.04.16 14:33</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#64748b; text-align:center;">(기존 등록된 IP)</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; color:#3b82f6; text-align:center;">삭제</td>
+          </tr>
+        </table>
+
+        <p style="color:#dc2626; font-size:13px; margin:12px 0;">* 현재 접속한 IP : <strong>123.456.78.90</strong> (실제 발송할 서버 IP를 확인 하신 후 입력하시기 바랍니다)</p>
+
+        <div style="display:flex; gap:6px; align-items:center; margin:12px 0;">
+          <span style="border:1px solid #d1d5db; border-radius:4px; padding:6px 10px; width:100px; text-align:center; font-size:13px; color:#9ca3af;">IP번호</span>
+          <span style="color:#9ca3af; font-weight:bold;">.</span>
+          <span style="border:1px solid #d1d5db; border-radius:4px; padding:6px 10px; width:100px; text-align:center; font-size:13px; color:#9ca3af;">IP번호</span>
+          <span style="color:#9ca3af; font-weight:bold;">.</span>
+          <span style="border:1px solid #d1d5db; border-radius:4px; padding:6px 10px; width:100px; text-align:center; font-size:13px; color:#9ca3af;">IP번호</span>
+          <span style="color:#9ca3af; font-weight:bold;">.</span>
+          <span style="border:1px solid #d1d5db; border-radius:4px; padding:6px 10px; width:100px; text-align:center; font-size:13px; color:#9ca3af;">IP번호</span>
+          <span style="background:#4ade80; color:#fff; border:none; border-radius:4px; padding:8px 20px; font-weight:bold; font-size:13px;">IP 추가하기</span>
+        </div>
+
+        <p style="color:#dc2626; font-size:12px; margin-top:8px;">* IP 대역을 추가하시려면 공란으로 비워두면 됩니다.<br>192.168.0. (공란)</p>
+      </div>
+
+      <ol>
+        <li>프로그램 설정의 <strong>공인 IP</strong>에 표시된 IP 주소를 확인합니다</li>
+        <li>IP 주소를 점(.) 기준으로 4칸에 나눠 입력합니다<br>
+            예: <code>123</code> . <code>456</code> . <code>78</code> . <code>90</code></li>
+        <li><strong>[IP 추가하기]</strong> 버튼을 클릭합니다</li>
+        <li>등록 완료 후 프로그램에서 <strong>[새로고침]</strong>을 눌러 확인합니다</li>
+      </ol>
+
+      <div class="warning">
+        <strong>유동 IP 사용자:</strong> 4번째 칸을 비워두면 해당 대역 전체가 허용됩니다.<br>
+        예: <code>123</code> . <code>456</code> . <code>78</code> . <code>(공란)</code> → 123.456.78.* 전체 허용<br>
+        IP가 자주 바뀌는 환경이라면 이 방법이 편리합니다.
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 20px 0 8px;">3-3. 등록 확인</h3>
+      <ol>
+        <li>알리고에서 IP 등록 완료</li>
+        <li>프로그램의 설정 관리에서 <strong>[새로고침]</strong> 버튼 클릭</li>
+        <li>공인 IP 옆에 <strong style="color: #4ade80;">(등록됨)</strong>이 표시되면 성공</li>
+      </ol>
+      <div class="highlight">
+        등록 후 반영까지 1~2분 소요될 수 있습니다. 바로 안 되면 잠시 후 다시 시도하세요.
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 20px 0 8px;">IP 등록 FAQ</h3>
+      <p><strong>Q. IP가 자꾸 바뀌는데 어떻게 하나요?</strong></p>
+      <p>A. 4번째 칸을 비워서 대역으로 등록하세요. 또는 IP 변경 시마다 재등록이 필요합니다.</p>
+      <br>
+      <p><strong>Q. 사무실과 집에서 번갈아 사용합니다.</strong></p>
+      <p>A. 두 곳의 공인 IP를 모두 등록하면 됩니다. 여러 IP를 등록할 수 있습니다.</p>
+      <br>
+      <p><strong>Q. 등록했는데 여전히 오류가 납니다.</strong></p>
+      <p>A. IP를 정확히 입력했는지 확인하세요. VPN 사용 중이라면 VPN IP가 아닌 실제 IP를 등록해야 합니다.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="compare">알림톡 vs 친구톡, 무엇을 사용할까?</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header blue">
+      <div class="step-num blue">VS</div>
+      <h2>발송 방식 비교</h2>
+    </div>
+    <div class="card-body">
+      <table class="comparison-table">
+        <tr>
+          <th style="width:20%">구분</th>
+          <th style="width:40%"><span class="badge badge-purple">알림톡</span></th>
+          <th style="width:40%"><span class="badge badge-blue">친구톡 (브랜드메시지)</span></th>
+        </tr>
+        <tr>
+          <td><strong>대상</strong></td>
+          <td>카카오톡 가입자 <strong>누구나</strong></td>
+          <td>카카오 채널 <strong>친구 + 수신동의자</strong></td>
+        </tr>
+        <tr>
+          <td><strong>메시지 형식</strong></td>
+          <td><strong>사전 승인된 템플릿</strong>만 가능</td>
+          <td>자유 형식 (텍스트, 이미지 등)</td>
+        </tr>
+        <tr>
+          <td><strong>승인 절차</strong></td>
+          <td>카카오 검수 필요 (4~5일)</td>
+          <td>없음</td>
+        </tr>
+        <tr>
+          <td><strong>용도</strong></td>
+          <td>세금 안내, 일정 알림 등 공식 알림</td>
+          <td>마케팅, 프로모션, 광고성 안내</td>
+        </tr>
+        <tr>
+          <td><strong>비용</strong></td>
+          <td>건당 약 7~10원</td>
+          <td>건당 약 15~20원</td>
+        </tr>
+        <tr>
+          <td><strong>발송 시간</strong></td>
+          <td>제한 없음</td>
+          <td>08:00 ~ 20:50 (광고 시간 제한)</td>
+        </tr>
+        <tr>
+          <td><strong>프로그램 탭</strong></td>
+          <td>[알림톡], [알림톡(엑셀)]</td>
+          <td>[친구톡]</td>
+        </tr>
+      </table>
+
+      <div class="warning">
+        <strong>친구톡 → 브랜드메시지 전환 안내</strong><br>
+        카카오는 2025년부터 기존 <strong>친구톡</strong> 서비스를 <strong>브랜드메시지</strong>로 전환하고 있습니다.
+        브랜드메시지는 채널 친구 중 <strong>광고성 정보 수신에 동의한 사용자</strong>에게만 발송되며,
+        메시지에 <strong>"(광고)" 표시</strong>와 <strong>수신거부 방법</strong>을 반드시 포함해야 합니다.
+        현재 알리고 API를 통한 발송은 기존 친구톡 방식과 동일하게 동작합니다.
+      </div>
+
+      <div class="highlight">
+        <strong>추천:</strong> 정기적인 매출/매입 현황, 세무일정 안내는 <strong>알림톡</strong>이 저렴하고 효과적입니다.
+        일회성 안내나 마케팅 메시지는 <strong>친구톡(브랜드메시지)</strong>을 사용하세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="alimtalk">알림톡 탭 — 간편 발송</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">A</div>
+      <h2>같은 메시지를 여러 사람에게 보내기</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>[알림톡]</strong> 탭은 가장 간단한 발송 방법입니다. 엑셀 파일 없이 바로 보낼 수 있습니다.</p>
+
+      <ol>
+        <li><strong>[템플릿 불러오기]</strong>를 클릭하여 승인된 템플릿을 선택합니다</li>
+        <li><strong>수신자 목록</strong>에 한 줄에 한 명씩 입력합니다:</li>
+      </ol>
+
+      <pre>김O인고객님 01000001111
+텐XX트XX점 01022223333
+XX수학학원 01033334444</pre>
+
+      <ol start="3">
+        <li><strong>[테스트 발송]</strong>으로 먼저 확인한 후 <strong>[실제 발송]</strong>을 클릭합니다</li>
+      </ol>
+
+      <div class="tip">
+        <strong>형식:</strong> <code>고객명 전화번호</code> (공백으로 구분, 한 줄에 한 명)<br>
+        전화번호는 하이픈 없이 숫자만 입력하세요.
+      </div>
+
+      <div class="warning">
+        <strong>알림톡은 승인된 템플릿이 필요합니다.</strong><br>
+        템플릿은 알리고 사이트에서 직접 등록/검수 요청해야 합니다.<br>
+        <a href="https://smartsms.aligo.in/shop/kakaotemplate.html" target="_blank" style="color:#60a5fa;">
+          https://smartsms.aligo.in/shop/kakaotemplate.html
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="alimtalk-excel">알림톡(엑셀) 탭 — 템플릿 조회 + 엑셀 발송</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">B</div>
+      <h2>템플릿 등록 (알리고 사이트에서 진행)</h2>
+    </div>
+    <div class="card-body">
+      <div class="warning">
+        <strong>템플릿 등록/수정/검수 요청은 알리고 사이트에서 직접 해야 합니다.</strong><br>
+        본 프로그램에서는 등록된 템플릿을 <em>조회하여 발송</em>만 수행합니다.
+      </div>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">알리고 사이트에서 템플릿 등록하기</h3>
+      <ol>
+        <li>
+          아래 링크로 이동해 알리고에 로그인합니다.<br>
+          <a href="https://smartsms.aligo.in/shop/kakaotemplate.html" target="_blank" style="color:#60a5fa;">
+            https://smartsms.aligo.in/shop/kakaotemplate.html
+          </a>
+        </li>
+        <li>상단 <strong>[템플릿관리]</strong> 탭 → 우측 <strong>[+ 템플릿 등록하기]</strong> 클릭</li>
+        <li>템플릿 이름과 내용을 입력 (변수는 <code>#{변수명}</code> 형식)</li>
+        <li>등록 완료 후 자동으로 카카오 검수 요청됨</li>
+        <li>영업일 <strong>4~5일</strong> 후 상태가 <strong>[승인완료]</strong>로 변경</li>
+      </ol>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">템플릿 작성 예시</h3>
+      <pre>#{고객명}님, #{기준월} 매출매입 현황을 안내드립니다.
+
+■ 매출: #{매출액}원
+■ 매입: #{매입액}원
+
+궁금하신 사항은 연락 바랍니다.
+감사합니다.</pre>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">템플릿 상태</h3>
+      <table>
+        <tr><th>상태</th><th>의미</th><th>다음 단계</th></tr>
+        <tr><td>검수중</td><td>카카오 심사 중</td><td>4~5일 대기</td></tr>
+        <tr><td>승인완료(사용가능)</td><td>승인 완료</td><td>본 프로그램에서 발송 가능</td></tr>
+        <tr><td>반려</td><td>심사 탈락</td><td>알리고 사이트에서 수정 후 재신청</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>템플릿 상태 갱신:</strong> 본 프로그램의 [알림톡(엑셀)] 탭에서 <strong>[템플릿 조회]</strong> 버튼을 누르면
+        알리고에 등록된 템플릿 목록을 최신 상태로 불러옵니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">C</div>
+      <h2>엑셀로 대량 발송하기</h2>
+    </div>
+    <div class="card-body">
+      <p>수신자마다 다른 내용(매출액, 일정 등)을 보내야 할 때 엑셀을 사용합니다.</p>
+
+      <ol>
+        <li>목록에서 템플릿을 선택하고 <strong>[엑셀 템플릿 생성]</strong> 클릭</li>
+        <li>자동으로 컬럼이 설정된 엑셀이 생성됩니다 (템플릿 변수 기반)</li>
+        <li>엑셀을 열어 고객 데이터를 입력합니다</li>
+        <li>하단 발송 영역에서 템플릿 선택 → 엑셀 파일 선택</li>
+        <li><strong>[테스트 발송]</strong> 후 <strong>[실제 발송]</strong></li>
+      </ol>
+
+      <div class="warning">
+        <strong>중요:</strong> 엑셀의 메시지 내용은 승인된 템플릿과 <strong>정확히 일치</strong>해야 합니다.
+        변수 부분(#{고객명} 등)만 다를 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="friendtalk">친구톡 탭</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header blue">
+      <div class="step-num blue">D</div>
+      <h2>친구톡(브랜드메시지)으로 자유 메시지 보내기</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>[친구톡]</strong> 탭에서는 템플릿 없이 자유로운 메시지를 보낼 수 있습니다.</p>
+
+      <ol>
+        <li><strong>[엑셀 생성]</strong>으로 발송용 엑셀(customers.xlsx) 생성</li>
+        <li>엑셀을 열어 고객 정보와 메시지를 입력</li>
+        <li><strong>[테스트 발송]</strong> 후 <strong>[실제 발송]</strong></li>
+      </ol>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">엑셀 컬럼</h3>
+      <table>
+        <tr><th>컬럼명</th><th>필수</th><th>설명</th></tr>
+        <tr><td><strong>이름</strong></td><td>필수</td><td>고객 이름</td></tr>
+        <tr><td><strong>전화번호</strong></td><td>필수</td><td>수신자 번호 (하이픈 무관)</td></tr>
+        <tr><td><strong>메세지</strong></td><td>필수</td><td>발송할 메시지 내용</td></tr>
+        <tr><td>제목</td><td>선택</td><td>친구톡 제목</td></tr>
+        <tr><td>발송결과</td><td>자동</td><td>발송 후 자동 기록</td></tr>
+        <tr><td>발송일시</td><td>자동</td><td>발송 시각 자동 기록</td></tr>
+      </table>
+
+      <div class="danger">
+        <strong>친구톡(브랜드메시지)은 카카오 채널을 "친구 추가"한 사람에게만 발송됩니다!</strong><br>
+        채널 친구가 아닌 수신자에게는 메시지가 전달되지 않습니다.
+      </div>
+
+      <div class="warning">
+        <strong>브랜드메시지 주의사항 (2025년~)</strong>
+        <ul style="margin-top: 8px;">
+          <li>발송 가능 시간: <strong>08:00 ~ 20:50</strong> (야간 발송 불가)</li>
+          <li>광고성 메시지는 <strong>"(광고)" 표시</strong>와 <strong>수신거부 방법</strong>을 포함해야 합니다</li>
+          <li>채널 친구 중 <strong>광고성 정보 수신에 동의한 사용자</strong>에게만 전달됩니다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="template">템플릿 등록 가이드</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">T</div>
+      <h2>알림톡 템플릿이란?</h2>
+    </div>
+    <div class="card-body">
+      <p>
+        알림톡은 <strong>카카오에서 사전에 승인받은 템플릿</strong>만 발송할 수 있습니다.
+        템플릿은 일종의 메시지 양식으로, 변수(<code>#{고객명}</code> 등)만 바꿔가며 대량 발송이 가능합니다.
+      </p>
+
+      <div class="warning">
+        <strong>템플릿 등록은 본 프로그램에서 할 수 없습니다.</strong><br>
+        알리고 사이트에 접속해 직접 등록 → 카카오 검수(4~5영업일) → 승인 완료 후 본 프로그램에서 발송하세요.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">1</div>
+      <h2>알리고 사이트 접속 및 템플릿 등록</h2>
+    </div>
+    <div class="card-body">
+      <ol>
+        <li>
+          알리고 템플릿 관리 페이지로 이동합니다.<br>
+          <a href="https://smartsms.aligo.in/shop/kakaotemplate.html" target="_blank" style="color:#60a5fa; word-break:break-all;">
+            https://smartsms.aligo.in/shop/kakaotemplate.html
+          </a>
+        </li>
+        <li>알리고 계정으로 로그인합니다 (본 프로그램의 로그인과 동일)</li>
+        <li>상단 <strong>[템플릿관리]</strong> 탭을 클릭</li>
+        <li>우측 <strong>[+ 템플릿 등록하기]</strong> 버튼 클릭</li>
+        <li>
+          <strong>템플릿명</strong>과 <strong>템플릿 내용</strong>을 입력하고 저장<br>
+          (변수는 <code>#{변수명}</code> 형식으로 작성)
+        </li>
+        <li>등록 후 자동으로 카카오에 검수 요청됩니다</li>
+        <li>영업일 <strong>4~5일</strong> 후 상태가 <strong>[승인완료]</strong>로 변경되면 본 프로그램에서 사용 가능</li>
+      </ol>
+
+      <h3 style="color:#f8fafc; margin: 24px 0 10px;">알리고 템플릿관리 화면 미리보기</h3>
+      <div class="aligo-mock">
+        <!-- 상단 탭 -->
+        <div class="aligo-tabs">
+          <div class="aligo-tab">홈</div>
+          <div class="aligo-tab">카카오채널 관리</div>
+          <div class="aligo-tab active">템플릿관리</div>
+          <div class="aligo-tab">템플릿예제</div>
+          <div class="aligo-tab">신청/인증</div>
+          <div class="aligo-tab">API스펙</div>
+          <div class="aligo-tab">API예제</div>
+        </div>
+
+        <!-- 헤더 -->
+        <div class="aligo-header">
+          <div class="aligo-title">
+            템플릿관리
+            <span class="aligo-help">? 템플릿이란?</span>
+            <span class="aligo-help">? 템플릿 검수기간</span>
+          </div>
+          <div class="aligo-header-btns">
+            <button class="aligo-btn-outline">템플릿 상태 갱신</button>
+            <button class="aligo-btn-primary">+ 템플릿 등록하기</button>
+          </div>
+        </div>
+
+        <!-- 검색 -->
+        <div class="aligo-search-row">
+          <select class="aligo-select"><option>전체검색</option></select>
+          <input type="text" class="aligo-input" placeholder="검색어">
+          <button class="aligo-btn-gray">검색</button>
+          <select class="aligo-select"><option>등록일 ↓</option></select>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="aligo-action-row">
+          <button class="aligo-btn-primary">알림톡 발송하기</button>
+          <button class="aligo-btn-gray">템플릿 수정</button>
+          <button class="aligo-btn-gray">대체문자 수정</button>
+          <button class="aligo-btn-gray">템플릿 이름변경</button>
+          <button class="aligo-btn-gray">삭제</button>
+          <select class="aligo-select" style="margin-left:auto;"><option>20개 보기</option></select>
+        </div>
+
+        <!-- 테이블 -->
+        <table class="aligo-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"></th>
+              <th>카카오채널ID</th>
+              <th>템플릿코드</th>
+              <th>템플릿명</th>
+              <th>대체문자</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" disabled></td>
+              <td>@kaXXXXX <span class="aligo-badge-ok">(정상)</span></td>
+              <td>UH_0515</td>
+              <td><a class="aligo-link">세무일정안내</a></td>
+              <td>발송안함</td>
+              <td><span class="aligo-status-approved">승인완료</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="aligo-pager">1</div>
+      </div>
+
+      <div class="tip" style="margin-top:14px;">
+        위 화면처럼 템플릿이 <strong>승인완료</strong> 상태가 되면 본 프로그램의 [알림톡(엑셀)] 탭에서 선택해 발송할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">2</div>
+      <h2>템플릿 작성 예시 (세무사 사무실)</h2>
+    </div>
+    <div class="card-body">
+      <h3 style="color:#f8fafc; margin: 0 0 8px;">예시 1 — 매출매입 현황</h3>
+      <pre>#{고객명}님, #{기준월} 매출매입 현황을 안내드립니다.
+
+■ 매출: #{매출액}원
+■ 매입: #{매입액}원
+
+궁금하신 사항은 연락 바랍니다.
+감사합니다.</pre>
+
+      <h3 style="color:#f8fafc; margin: 16px 0 8px;">예시 2 — 세무 주요 일정</h3>
+      <pre>#{고객명}님, #{기준월} 세무 주요일정을 안내드립니다.
+
+#{일정내용}
+
+기한 내 신고/납부 부탁드립니다.
+감사합니다.</pre>
+
+      <div class="tip">
+        <strong>변수 사용 규칙:</strong><br>
+        • <code>#{변수명}</code> 형식으로 작성 (중괄호 필수)<br>
+        • 변수명은 공백 없이 한글/영문/숫자만 사용<br>
+        • 발송 시 엑셀의 컬럼명과 <strong>정확히 일치</strong>해야 함
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">3</div>
+      <h2>카카오 검수 기준 (반려 방지)</h2>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>허용</th><th>반려</th></tr>
+        <tr>
+          <td>주문 확인, 배송 안내, 예약 알림</td>
+          <td>"지금 가입하세요" 같은 광고성 문구</td>
+        </tr>
+        <tr>
+          <td>본인의 계약/거래 정보 안내</td>
+          <td>"이벤트 참여하세요" 같은 홍보 문구</td>
+        </tr>
+        <tr>
+          <td>본인의 매출/매입 등 재무 정보</td>
+          <td>제3자 광고나 프로모션</td>
+        </tr>
+        <tr>
+          <td>세금/공과금 납부 안내</td>
+          <td>할인/쿠폰 제공 안내</td>
+        </tr>
+      </table>
+
+      <div class="danger">
+        <strong>반려 시:</strong> 알리고 사이트의 템플릿 관리 페이지에서 내용을 수정하고 재신청하세요.
+        광고성 문구를 모두 제거하고 정보 전달 목적으로만 작성해야 합니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header purple">
+      <div class="step-num purple">4</div>
+      <h2>템플릿 상태 확인</h2>
+    </div>
+    <div class="card-body">
+      <p>알리고 사이트 또는 본 프로그램의 <strong>[알림톡(엑셀)]</strong> 탭에서 템플릿 상태를 확인할 수 있습니다.</p>
+
+      <table>
+        <tr><th>상태 표기</th><th>의미</th><th>발송 가능?</th></tr>
+        <tr><td>검수중</td><td>카카오 심사 진행 중 (4~5영업일)</td><td>불가</td></tr>
+        <tr><td>승인완료 / 사용가능</td><td>카카오 승인 완료</td><td><strong>가능</strong></td></tr>
+        <tr><td>반려</td><td>심사 탈락</td><td>불가 (수정 후 재신청)</td></tr>
+        <tr><td>중단</td><td>사용 중단된 템플릿</td><td>불가</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>[알림톡(엑셀)] 탭의 [템플릿 조회] 버튼</strong>을 누르면 알리고 서버에서 최신 상태를 불러옵니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="result">발송 결과 확인</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header green">
+      <div class="step-num green">!</div>
+      <h2>발송 결과는 어디서 확인하나요?</h2>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>확인 방법</th><th>설명</th><th>정확도</th></tr>
+        <tr>
+          <td><strong>프로그램 로그</strong></td>
+          <td>화면 하단에 실시간 발송 상태 표시</td>
+          <td>알리고 접수 기준</td>
+        </tr>
+        <tr>
+          <td><strong>엑셀 파일</strong></td>
+          <td>발송결과/발송일시 컬럼에 자동 기록</td>
+          <td>알리고 접수 기준</td>
+        </tr>
+        <tr>
+          <td><strong>알리고 관리자 페이지</strong></td>
+          <td><code>smartsms.aligo.in</code>에서 건별 상세 확인</td>
+          <td><strong>가장 정확</strong></td>
+        </tr>
+      </table>
+
+      <div class="highlight">
+        프로그램에서 "성공"은 <strong>알리고에 접수되었다</strong>는 뜻입니다.<br>
+        카카오에서 실제로 전달되었는지는 <strong>알리고 관리자 페이지</strong>에서 확인하세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 class="section-title" id="faq">자주 묻는 질문 (FAQ)</h2>
+  <!-- ============================================================ -->
+
+  <div class="card">
+    <div class="card-header amber">
+      <div class="step-num amber">?</div>
+      <h2>FAQ</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>Q. 프로그램 실행 시 "인증되지 않은 사용자입니다"가 나와요.</strong></p>
+      <p>A. [로그인] 버튼을 클릭하고 등록된 이메일로 인증하세요. 미등록 이메일이면 가입 신청을 먼저 하세요.</p>
+      <br>
+
+      <p><strong>Q. "승인 대기 중입니다" 메시지가 나와요.</strong></p>
+      <p>A. 가입 신청 후 관리자 승인을 기다리고 있는 상태입니다. 승인이 완료되면 로그인이 가능합니다.</p>
+      <br>
+
+      <p><strong>Q. "토큰 생성 실패: 인증되지 않는 서버 IP" 오류가 나와요.</strong></p>
+      <p>A. 공인 IP가 알리고에 미등록 상태입니다. 설정의 [IP 등록 방법] 버튼을 눌러 가이드를 따라하세요.</p>
+      <br>
+
+      <p><strong>Q. "성공"이라고 나오는데 카카오톡에 안 와요.</strong></p>
+      <p>A. 친구톡: 수신자가 채널 친구가 아닐 수 있습니다. / 알림톡: 메시지가 템플릿과 다를 수 있습니다. 알리고 관리자 페이지에서 상세 실패 사유를 확인하세요.</p>
+      <br>
+
+      <p><strong>Q. "등록되지 않은 인증키" 오류가 나와요.</strong></p>
+      <p>A. 설정에서 <code>ALIGO_API_KEY</code>와 <code>ALIGO_SENDER_KEY</code> 값이 뒤바뀌지 않았는지 확인하세요.</p>
+      <br>
+
+      <p><strong>Q. 카카오비즈니스에서 발송 내역이 안 보여요.</strong></p>
+      <p>A. 정상입니다. 알리고를 통한 발송은 카카오비즈니스 관리자센터에 표시되지 않습니다. 알리고에서 확인하세요.</p>
+      <br>
+
+      <p><strong>Q. 한 번에 몇 명까지 보낼 수 있나요?</strong></p>
+      <p>A. 1회 최대 500명입니다. 프로그램이 자동으로 500명씩 나누어 발송합니다.</p>
+      <br>
+
+      <p><strong>Q. 발송 중 엑셀에 결과가 안 써져요.</strong></p>
+      <p>A. 발송 중에 엑셀 파일이 열려 있으면 저장이 실패합니다. 발송 전에 엑셀을 닫아주세요.</p>
+      <br>
+
+      <p><strong>Q. 알림톡 템플릿이 반려되었어요.</strong></p>
+      <p>A. 카카오 검수 기준에 맞지 않은 경우입니다. 내용을 수정하여 새로 등록하세요. 광고성 내용은 알림톡이 아닌 친구톡으로 보내야 합니다.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  카카오 채널 메시지 발송 프로그램 사용 가이드
+</div>
+
+</body>
+</html>
