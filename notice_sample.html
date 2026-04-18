@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공지사항 - 카카오 채널 메시지 발송</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+    background: #0f172a; color: #e2e8f0;
+    line-height: 1.8; padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff; padding: 52px 24px; text-align: center;
+  }
+  .hero .badge {
+    display: inline-block; background: rgba(255,255,255,0.2);
+    padding: 4px 14px; border-radius: 20px; font-size: 13px;
+    margin-bottom: 12px; letter-spacing: 0.5px;
+  }
+  .hero h1 { font-size: 28px; margin-bottom: 10px; }
+  .hero p  { font-size: 14px; opacity: 0.92; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
+
+  .meta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; background: #1e293b; border-radius: 8px;
+    margin-bottom: 24px; font-size: 13px; color: #94a3b8;
+    border: 1px solid #334155;
+  }
+  .meta strong { color: #f8fafc; }
+
+  .card {
+    background: #1e293b; border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 20px;
+    border: 1px solid #334155;
+  }
+  .card h2 {
+    font-size: 18px; color: #f8fafc; margin-bottom: 14px;
+    padding-bottom: 10px; border-bottom: 2px solid #3b82f6;
+  }
+  .card p  { margin-bottom: 14px; color: #cbd5e1; font-size: 15px; }
+  .card ul { margin: 10px 0 14px 22px; }
+  .card li { margin-bottom: 8px; color: #cbd5e1; font-size: 15px; }
+  .card strong { color: #f8fafc; }
+
+  .highlight {
+    background: #1e3a5f; border-left: 4px solid #3b82f6;
+    padding: 14px 18px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #93c5fd;
+  }
+  .warning {
+    background: #422006; border-left: 4px solid #f59e0b;
+    padding: 14px 18px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #fde68a;
+  }
+  .tip {
+    background: #14532d; border-left: 4px solid #22c55e;
+    padding: 14px 18px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 14px; color: #86efac;
+  }
+
+  code {
+    background: #334155; padding: 2px 8px;
+    border-radius: 4px; font-family: Consolas, monospace;
+    font-size: 13px; color: #fbbf24;
+  }
+
+  .footer {
+    text-align: center; padding: 32px 24px 48px;
+    color: #475569; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">NOTICE</div>
+  <h1>서비스 이용 공지</h1>
+  <p>카카오 채널 메시지 발송 프로그램</p>
+</div>
+
+<div class="container">
+
+  <div class="meta">
+    <span>공지일: <strong>2028-04-18</strong></span>
+    <span>대상: <strong>모든 사용자</strong></span>
+  </div>
+
+  <!-- ▼ 공지 내용 예시 - 실제 공지에 맞게 수정하세요 ▼ -->
+
+  <div class="card">
+    <h2>주요 안내</h2>
+    <p>
+      안녕하세요, 카카오 채널 메시지 발송 프로그램을 이용해주셔서 감사합니다.
+      아래 사항을 확인해주시기 바랍니다.
+    </p>
+
+    <ul>
+      <li><strong>서비스 점검:</strong> 2028-04-20 02:00 ~ 04:00 (약 2시간)</li>
+      <li><strong>영향 범위:</strong> 점검 시간 동안 발송 기능 일시 중단</li>
+      <li><strong>재개:</strong> 점검 완료 후 자동 복구</li>
+    </ul>
+
+    <div class="highlight">
+      점검 시간 중에는 알림톡/친구톡 모두 발송이 불가능합니다. 미리 발송을 완료해주세요.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>업데이트 내역</h2>
+    <ul>
+      <li>템플릿 조회 속도 개선</li>
+      <li>엑셀 발송 시 진행률 표시 개선</li>
+      <li>공지사항 기능 추가</li>
+    </ul>
+
+    <div class="tip">
+      새 버전이 있다면 프로그램이 안내 메시지를 표시합니다. 안내에 따라 업데이트 해주세요.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>주의 사항</h2>
+    <p>다음과 같은 증상이 있다면 설정을 다시 확인해주세요.</p>
+
+    <ul>
+      <li>"토큰 생성 실패" 오류 → 공인 IP 등록 여부 확인</li>
+      <li>"등록되지 않은 인증키" 오류 → <code>ALIGO_API_KEY</code>/<code>ALIGO_SENDER_KEY</code> 혼동 확인</li>
+      <li>발송 "성공"인데 안 옴 → 친구톡은 채널 친구여야 수신 가능</li>
+    </ul>
+
+    <div class="warning">
+      문의: 프로그램 내 [사용 가이드] 버튼의 FAQ 섹션을 먼저 확인해주세요.
+    </div>
+  </div>
+
+  <!-- ▲ 공지 내용 예시 끝 ▲ -->
+
+</div>
+
+<div class="footer">
+  카카오 채널 메시지 발송 프로그램 · 공지사항
+</div>
+
+</body>
+</html>
